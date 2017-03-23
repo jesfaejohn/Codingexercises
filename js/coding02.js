@@ -14,9 +14,9 @@ function pixelcircle(){
 
        var size=dist(mouseX,mouseY,x,y);
        var s=size/max_distance*50;
-       //var color=map(y,0,width,0,255);
-       colorMode(HSB,500);
-       var c=color(0,0,100)
+       var a=(mouseX,mouseY);
+       var c=map(size,0,500,0,225);
+       //var c=color(0,0,s);
        fill(c);
        ellipse(x,y,s,s);
        }
