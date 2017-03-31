@@ -79,7 +79,12 @@ li.assignmentLink{
     line-height: 130%;
     text-align: center;
 }
-
+.btn {
+    background-color:black;
+    color: white;
+    cursor:pointer;
+    font-size: 20px;
+}
 li.assignmentLink > a{
     color: #000000;
 }

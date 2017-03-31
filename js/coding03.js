@@ -1,25 +1,23 @@
 // **** Global variables ****//
 var apiKey = '51771b8b2f361ac7a07febf73754109d';
 var baseURL = 'http://api.openweathermap.org/data/2.5/weather?q=';
-var forecastURL = 'http://api.openweathermap.org/data/2.5/forecast?q=';
+var forecastURL = 'http://api.openweathermap.org/data/2.5/forecast/daily?q=';
 var city;
 var units = 'metric';
 var weatherData;
 var forecastData;
 // Temperature //
 var temperature = 0;
-// High Temp //
+// Maximum Temp over the day//
 var maxtemp = 0;
-// Low Temp //
+// Minimum Temp over the day//
 var mintemp = 0;
-
 // Humidity //
 var humidity = 0;
-
+//windspeed//
+var windspeed=0;
 var description;
 var fdescription;
-var windspeed=0;
-
 var button;
 var queryText;
 var cnv;
@@ -32,37 +30,14 @@ var monthNames = ["January", "February", "March", "April", "May", "June",
 
 // **** Setup function **** //
 function setup(){
-    var cnv = createCanvas(800, 1000);
-    cnv.parent('canvas-holder');
+    createCanvas(800, 600);
     button = select('#submit');
     city = select('#city');
     button.mousePressed(queryAPI);
     button.mousePressed(querytoday);
-    button.mousePressed(forecastTitle);
     button.mousePressed(queryDate);
-    //queryText.position(500, 800);
-    city.position(1000, 200);
-    button.position(city.x + city.width, 800);
-    city.style('font-family', 'Roboto Condensed');
 }
 
-function keyPressed() {
-    if(keyCode == ENTER) {
-        queryAPI();
-        querytoday();
-        getForecastData();
-        queryDate();
-    } else if (keyCode == RETURN) {
-        queryAPI();
-        querytoday();
-        getForecastData();
-        queryDate();
-    }
-}
-
-function forecastTitle(title){
-    secondTitle = title;
-}
 
 function queryDate(calendar){
     date = calendar;
@@ -91,47 +66,46 @@ function querytoday(){
     loadJSON(todayforecast, getForecastData);
 }
 
-function getForecastData(apiData){
-    weatherData = apiData;
-    mintemp = forecastData.list.temp.min;
-    maxtemp = forecastData.list.temp.max;
-    fdescription = forecastData.list.weather.description;
+function getForecastData(apitodayData){
+    forecastData=apitodayData;
+    mintemp = forecastData.list[0].temp.min;
+    maxtemp = forecastData.list[0].temp.max;
     console.log(getForecastData);
 }
 
-
-
 // **** Draw function **** //
 function draw(){
-    background(60);
-    fill(0);
+    background(255);
     noStroke();
-    colorMode(HSB, 100);
     textSize(50);
     //textStyle(BOLD);
-    text(city.value(),275,100);
-    fill(255);
-    //queryText = text('Pick City', 400, 800)
+    //text(city.name,250,100);
+    
     if(weatherData){
-        // temperature //
-        if (temperature >=0){    
-        fill(temperature, 50, 100);
+        if (temperature >0 && temperature<=10){
+        background(255,255,0);
         textSize(75);
-        text(int(temperature) + ' degC', width/2, 200);
+        text(int(temperature) + ' \xB0C', 300, 200);
         }
-
-        else {
-        fill(temperature, 100, 100);
-        textSize(50);
-        textStyle(BOLD);
-        text(int(temperature) + ' DEGREES!', 20, 200);
-        //text('\n' + m + '.' + d + ' ' + y, 500, 250);
+        else{
+        if (temperature >10 && temperature<=30){    
+        background(255,165,0);
+        textSize(75);
+        text(int(temperature) + ' \xB0C', 300, 200);
+        }  
+        else
+        {
+        background(255,0,0);
+        textSize(75);
+        text(int(temperature) + ' \xB0C', 300, 200);
         }
+        }
+       
         // humidity //
         textSize(30);
         textStyle(NORMAL);
         // ellipse(400, 400, humidity * 10, humidity * 10);
-        text(humidity + '%' + '  humidity',150, 350);
+        text(humidity + '%' + 'humidity',100, 400);
 
         // description //
         textStyle(BOLD);
@@ -139,18 +113,23 @@ function draw(){
 
         //wind speed//
         textStyle(NORMAL);
-        text(int(windspeed) +'mph wind',500,350);
+        text(int(windspeed) +'mph wind',500,400);
     }
 
     if(date){
-        text('\n' + monthNames[m] + ' ' + d + ', ' + y, 500, 290);
+        text(monthNames[m-1] + ' ' + d + ', ' + y, 275, 325);
+    }
+    if (getForecastData) { 
+
+       textSize(25);
+       textStyle(BOLD);
+       text('Todays Forecast',300,500);
+       textStyle(NORMAL);
+       text('Min temperature: ' + int(mintemp) + '\xB0C', 25, 550);
+       text('Max temperature: ' + int(maxtemp) + '\xB0C', 500, 550);
     }
 
-    if (getForecastData) {
-     textStyle(NORMAL);
-        text('Forecast for today:',fdescription,3250,500);
-    }
+}
 
    
 
-}
